@@ -251,24 +251,43 @@ export async function uninstallVersion(version: string): Promise<{ success: bool
   }
 }
 
+export interface RemoteVersion {
+  version: string;
+  isLts: boolean;
+}
+
 /**
  * Get available remote versions
  */
-export async function getRemoteVersions(): Promise<string[]> {
+export async function getRemoteVersions(): Promise<RemoteVersion[]> {
   try {
     const fnmCmd = getFnmCommand();
     const { stdout } = await execWithEnv(`${fnmCmd} list-remote`);
     const lines = stdout.trim().split("\n");
-    const versions: string[] = [];
+    const versions: RemoteVersion[] = [];
 
     for (const line of lines) {
+      const isLts = line.toLowerCase().includes("lts");
       const versionMatch = line.match(/v?(\d+\.\d+\.\d+)/);
       if (versionMatch) {
-        versions.push(versionMatch[1]);
+        versions.push({
+          version: versionMatch[1],
+          isLts,
+        });
       }
     }
 
-    return versions.reverse(); // Latest versions first
+    // 按版本号倒序排列(最新版本在前)
+    versions.sort((a, b) => {
+      const [aMajor, aMinor, aPatch] = a.version.split(".").map(Number);
+      const [bMajor, bMinor, bPatch] = b.version.split(".").map(Number);
+      
+      if (aMajor !== bMajor) return bMajor - aMajor;
+      if (aMinor !== bMinor) return bMinor - aMinor;
+      return bPatch - aPatch;
+    });
+
+    return versions;
   } catch (error) {
     console.error("Error getting remote versions:", error);
     return [];

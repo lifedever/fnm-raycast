@@ -11,7 +11,7 @@ import {
   openExtensionPreferences,
 } from "@raycast/api";
 import React, { useEffect, useState } from "react";
-import { checkFnmInstalled, getRemoteVersions, installVersion, getFnmPath } from "./utils/fnm";
+import { checkFnmInstalled, getRemoteVersions, installVersion, getFnmPath, RemoteVersion } from "./utils/fnm";
 
 interface InstallFormProps {
   onInstall: (version: string) => void;
@@ -166,12 +166,15 @@ export default function InstallVersion(props: { arguments?: { version?: string }
       <List.Section title="Available Versions (Latest 50)">
         {versions.map((version) => (
           <List.Item
-            key={version}
+            key={version.version}
             icon={Icon.Circle}
-            title={version}
+            title={version.version}
+            accessories={[
+              ...(version.isLts ? [{ tag: { value: "lts", color: Color.Orange } }] : []),
+            ]}
             actions={
               <ActionPanel>
-                <Action title="Install This Version" icon={Icon.Download} onAction={() => handleInstall(version)} />
+                <Action title="Install This Version" icon={Icon.Download} onAction={() => handleInstall(version.version)} />
               </ActionPanel>
             }
           />
