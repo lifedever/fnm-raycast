@@ -82,8 +82,8 @@ export async function checkFnmInstalled(): Promise<boolean> {
 
     // 如果用户配置了完整路径,直接检查文件是否存在
     if (fnmCmd.includes("/")) {
-      const fs = require("fs");
-      return fs.existsSync(fnmCmd);
+      const { existsSync } = await import("fs");
+      return existsSync(fnmCmd);
     }
 
     // 否则使用 which 命令查找
@@ -184,10 +184,11 @@ export async function installVersion(version: string): Promise<{ success: boolea
       success: true,
       message: stdout || stderr || `Successfully installed Node.js ${version}`,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
     return {
       success: false,
-      message: error.message || `Failed to install Node.js ${version}`,
+      message: errorMessage || `Failed to install Node.js ${version}`,
     };
   }
 }
@@ -200,15 +201,16 @@ export async function useVersion(version: string): Promise<{ success: boolean; m
   try {
     const fnmCmd = getFnmCommand();
     // 使用 fnm default 而不是 fnm use,因为 use 需要 shell 集成
-    const { stdout, stderr } = await execWithEnv(`${fnmCmd} default ${version}`);
+    await execWithEnv(`${fnmCmd} default ${version}`);
     return {
       success: true,
       message: `已将 Node.js ${version} 设置为默认版本\n新打开的终端将使用此版本`,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
     return {
       success: false,
-      message: error.message || `切换到 Node.js ${version} 失败`,
+      message: errorMessage || `切换到 Node.js ${version} 失败`,
     };
   }
 }
@@ -224,10 +226,11 @@ export async function setDefaultVersion(version: string): Promise<{ success: boo
       success: true,
       message: stdout || stderr || `Set Node.js ${version} as default`,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
     return {
       success: false,
-      message: error.message || `Failed to set Node.js ${version} as default`,
+      message: errorMessage || `Failed to set Node.js ${version} as default`,
     };
   }
 }
@@ -243,10 +246,11 @@ export async function uninstallVersion(version: string): Promise<{ success: bool
       success: true,
       message: stdout || stderr || `Successfully uninstalled Node.js ${version}`,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
     return {
       success: false,
-      message: error.message || `Failed to uninstall Node.js ${version}`,
+      message: errorMessage || `Failed to uninstall Node.js ${version}`,
     };
   }
 }

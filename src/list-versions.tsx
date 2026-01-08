@@ -1,13 +1,6 @@
 import { Action, ActionPanel, Color, Icon, List, showToast, Toast, openExtensionPreferences } from "@raycast/api";
 import React, { useEffect, useState } from "react";
-import {
-  checkFnmInstalled,
-  getInstalledVersions,
-  NodeVersion,
-  setDefaultVersion,
-  useVersion,
-  getFnmPath,
-} from "./utils/fnm";
+import { checkFnmInstalled, getInstalledVersions, NodeVersion, useVersion, getFnmPath } from "./utils/fnm";
 
 export default function ListVersions() {
   const [versions, setVersions] = useState<NodeVersion[]>([]);
@@ -56,25 +49,6 @@ export default function ListVersions() {
     } else {
       toast.style = Toast.Style.Failure;
       toast.title = "设置失败";
-      toast.message = result.message;
-    }
-  }
-
-  async function handleSetDefault(version: string) {
-    const toast = await showToast({
-      style: Toast.Style.Animated,
-      title: `Setting Node.js ${version} as default...`,
-    });
-
-    const result = await setDefaultVersion(version);
-
-    if (result.success) {
-      toast.style = Toast.Style.Success;
-      toast.title = `Node.js ${version} set as default`;
-      await loadVersions();
-    } else {
-      toast.style = Toast.Style.Failure;
-      toast.title = "Failed to set default version";
       toast.message = result.message;
     }
   }

@@ -11,7 +11,7 @@ import {
   openExtensionPreferences,
 } from "@raycast/api";
 import React, { useEffect, useState } from "react";
-import { checkFnmInstalled, getRemoteVersions, installVersion, getFnmPath, RemoteVersion } from "./utils/fnm";
+import { checkFnmInstalled, getRemoteVersions, installVersion, getFnmPath } from "./utils/fnm";
 
 interface InstallFormProps {
   onInstall: (version: string) => void;
@@ -133,7 +133,7 @@ export default function InstallVersion(props: { arguments?: { version?: string }
           subtitle="Recommended for most users"
           actions={
             <ActionPanel>
-              <Action title="Install LTS" icon={Icon.Download} onAction={() => handleInstall("lts")} />
+              <Action title="Install Lts" icon={Icon.Download} onAction={() => handleInstall("lts")} />
             </ActionPanel>
           }
         />
