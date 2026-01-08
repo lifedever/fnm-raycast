@@ -1,5 +1,16 @@
-import { Action, ActionPanel, Color, Form, Icon, List, showToast, Toast, useNavigation, openExtensionPreferences } from "@raycast/api";
-import { useEffect, useState } from "react";
+import {
+  Action,
+  ActionPanel,
+  Color,
+  Form,
+  Icon,
+  List,
+  showToast,
+  Toast,
+  useNavigation,
+  openExtensionPreferences,
+} from "@raycast/api";
+import React, { useEffect, useState } from "react";
 import { checkFnmInstalled, getRemoteVersions, installVersion, getFnmPath } from "./utils/fnm";
 
 interface InstallFormProps {
@@ -56,9 +67,7 @@ export default function InstallVersion(props: { arguments?: { version?: string }
       await showToast({
         style: Toast.Style.Failure,
         title: "fnm 未找到",
-        message: fnmPath.includes("/") 
-          ? `路径 ${fnmPath} 不存在,请检查配置`
-          : "请安装 fnm 或在设置中配置路径",
+        message: fnmPath.includes("/") ? `路径 ${fnmPath} 不存在,请检查配置` : "请安装 fnm 或在设置中配置路径",
       });
       setIsLoading(false);
       return;
@@ -144,7 +153,11 @@ export default function InstallVersion(props: { arguments?: { version?: string }
           subtitle="Enter a specific version number"
           actions={
             <ActionPanel>
-              <Action title="Enter Version" icon={Icon.Pencil} onAction={() => push(<InstallForm onInstall={handleInstall} />)} />
+              <Action
+                title="Enter Version"
+                icon={Icon.Pencil}
+                onAction={() => push(<InstallForm onInstall={handleInstall} />)}
+              />
             </ActionPanel>
           }
         />

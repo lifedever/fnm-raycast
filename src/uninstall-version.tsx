@@ -1,5 +1,16 @@
-import { Action, ActionPanel, Alert, Color, confirmAlert, Icon, List, showToast, Toast, openExtensionPreferences } from "@raycast/api";
-import { useEffect, useState } from "react";
+import {
+  Action,
+  ActionPanel,
+  Alert,
+  Color,
+  confirmAlert,
+  Icon,
+  List,
+  showToast,
+  Toast,
+  openExtensionPreferences,
+} from "@raycast/api";
+import React, { useEffect, useState } from "react";
 import { checkFnmInstalled, getInstalledVersions, NodeVersion, uninstallVersion, getFnmPath } from "./utils/fnm";
 
 export default function UninstallVersion() {
@@ -22,9 +33,7 @@ export default function UninstallVersion() {
       await showToast({
         style: Toast.Style.Failure,
         title: "fnm 未找到",
-        message: fnmPath.includes("/") 
-          ? `路径 ${fnmPath} 不存在,请检查配置`
-          : "请安装 fnm 或在设置中配置路径",
+        message: fnmPath.includes("/") ? `路径 ${fnmPath} 不存在,请检查配置` : "请安装 fnm 或在设置中配置路径",
       });
       setIsLoading(false);
       return;

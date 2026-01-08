@@ -21,12 +21,12 @@ function getPreferences(): Preferences {
 // 获取 fnm 命令,优先使用用户配置的路径
 function getFnmCommand(): string {
   const preferences = getPreferences();
-  
+
   // 如果用户配置了自定义路径,使用自定义路径
   if (preferences.fnmPath && preferences.fnmPath.trim()) {
     return preferences.fnmPath.trim();
   }
-  
+
   // 否则使用默认的 fnm 命令
   return "fnm";
 }
@@ -34,7 +34,7 @@ function getFnmCommand(): string {
 // 获取正确的 PATH,包含常见的包管理器路径和用户自定义路径
 function getEnvWithPath() {
   const preferences = getPreferences();
-  
+
   const paths = [
     "/opt/homebrew/bin", // Homebrew (Apple Silicon)
     "/usr/local/bin", // Homebrew (Intel)
@@ -43,18 +43,18 @@ function getEnvWithPath() {
     "/usr/sbin",
     "/sbin",
   ];
-  
+
   // 添加用户自定义的额外路径
   if (preferences.customPaths && preferences.customPaths.trim()) {
     const customPaths = preferences.customPaths.split(":").filter(Boolean);
     paths.unshift(...customPaths);
   }
-  
+
   // 添加系统 PATH
   if (process.env.PATH) {
     paths.push(process.env.PATH);
   }
-  
+
   return {
     ...process.env,
     PATH: paths.filter(Boolean).join(":"),
@@ -79,13 +79,13 @@ export interface NodeVersion {
 export async function checkFnmInstalled(): Promise<boolean> {
   try {
     const fnmCmd = getFnmCommand();
-    
+
     // 如果用户配置了完整路径,直接检查文件是否存在
     if (fnmCmd.includes("/")) {
       const fs = require("fs");
       return fs.existsSync(fnmCmd);
     }
-    
+
     // 否则使用 which 命令查找
     await execWithEnv(`which ${fnmCmd}`);
     return true;
@@ -146,7 +146,7 @@ export async function getInstalledVersions(): Promise<NodeVersion[]> {
     versions.sort((a, b) => {
       const [aMajor, aMinor, aPatch] = a.version.split(".").map(Number);
       const [bMajor, bMinor, bPatch] = b.version.split(".").map(Number);
-      
+
       if (aMajor !== bMajor) return bMajor - aMajor;
       if (aMinor !== bMinor) return bMinor - aMinor;
       return bPatch - aPatch;

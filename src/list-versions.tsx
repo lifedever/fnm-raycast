@@ -1,6 +1,13 @@
 import { Action, ActionPanel, Color, Icon, List, showToast, Toast, openExtensionPreferences } from "@raycast/api";
-import { useEffect, useState } from "react";
-import { checkFnmInstalled, getInstalledVersions, NodeVersion, setDefaultVersion, useVersion, getFnmPath } from "./utils/fnm";
+import React, { useEffect, useState } from "react";
+import {
+  checkFnmInstalled,
+  getInstalledVersions,
+  NodeVersion,
+  setDefaultVersion,
+  useVersion,
+  getFnmPath,
+} from "./utils/fnm";
 
 export default function ListVersions() {
   const [versions, setVersions] = useState<NodeVersion[]>([]);
@@ -22,9 +29,7 @@ export default function ListVersions() {
       await showToast({
         style: Toast.Style.Failure,
         title: "fnm 未找到",
-        message: fnmPath.includes("/") 
-          ? `路径 ${fnmPath} 不存在,请检查配置`
-          : "请安装 fnm 或在设置中配置路径",
+        message: fnmPath.includes("/") ? `路径 ${fnmPath} 不存在,请检查配置` : "请安装 fnm 或在设置中配置路径",
       });
       setIsLoading(false);
       return;
@@ -120,16 +125,12 @@ export default function ListVersions() {
             ]}
             actions={
               <ActionPanel>
-                <Action 
-                  title="设为默认版本" 
-                  icon={Icon.Star} 
-                  onAction={() => handleUseVersion(version.version)} 
-                />
-                <Action 
-                  title="刷新列表" 
-                  icon={Icon.ArrowClockwise} 
-                  onAction={loadVersions} 
-                  shortcut={{ modifiers: ["cmd"], key: "r" }} 
+                <Action title="设为默认版本" icon={Icon.Star} onAction={() => handleUseVersion(version.version)} />
+                <Action
+                  title="刷新列表"
+                  icon={Icon.ArrowClockwise}
+                  onAction={loadVersions}
+                  shortcut={{ modifiers: ["cmd"], key: "r" }}
                 />
               </ActionPanel>
             }
