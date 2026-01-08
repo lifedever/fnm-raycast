@@ -169,12 +169,14 @@ export default function InstallVersion(props: { arguments?: { version?: string }
             key={version.version}
             icon={Icon.Circle}
             title={version.version}
-            accessories={[
-              ...(version.isLts ? [{ tag: { value: "lts", color: Color.Orange } }] : []),
-            ]}
+            accessories={[...(version.isLts ? [{ tag: { value: "lts", color: Color.Orange } }] : [])]}
             actions={
               <ActionPanel>
-                <Action title="Install This Version" icon={Icon.Download} onAction={() => handleInstall(version.version)} />
+                <Action
+                  title="Install This Version"
+                  icon={Icon.Download}
+                  onAction={() => handleInstall(version.version)}
+                />
               </ActionPanel>
             }
           />

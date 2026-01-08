@@ -281,7 +281,7 @@ export async function getRemoteVersions(): Promise<RemoteVersion[]> {
     versions.sort((a, b) => {
       const [aMajor, aMinor, aPatch] = a.version.split(".").map(Number);
       const [bMajor, bMinor, bPatch] = b.version.split(".").map(Number);
-      
+
       if (aMajor !== bMajor) return bMajor - aMajor;
       if (aMinor !== bMinor) return bMinor - aMinor;
       return bPatch - aPatch;
