@@ -21,8 +21,8 @@ export default function UseVersion() {
       const fnmPath = getFnmPath();
       await showToast({
         style: Toast.Style.Failure,
-        title: "fnm 未找到",
-        message: fnmPath.includes("/") ? `路径 ${fnmPath} 不存在,请检查配置` : "请安装 fnm 或在设置中配置路径",
+        title: "fnm not found",
+        message: fnmPath.includes("/") ? `Path ${fnmPath} does not exist, please check configuration` : "Please install fnm or configure path in settings",
       });
       setIsLoading(false);
       return;
@@ -36,19 +36,19 @@ export default function UseVersion() {
   async function handleUseVersion(version: string) {
     const toast = await showToast({
       style: Toast.Style.Animated,
-      title: `正在设置 Node.js ${version} 为默认版本...`,
+      title: `Setting Node.js ${version} as default...`,
     });
 
     const result = await useVersion(version);
 
     if (result.success) {
       toast.style = Toast.Style.Success;
-      toast.title = `Node.js ${version} 已设为默认`;
-      toast.message = "新打开的终端将使用此版本";
+      toast.title = `Node.js ${version} set as default`;
+      toast.message = "New terminal sessions will use this version";
       await loadVersions();
     } else {
       toast.style = Toast.Style.Failure;
-      toast.title = "设置失败";
+      toast.title = "Failed to set default";
       toast.message = result.message;
     }
   }
@@ -59,15 +59,15 @@ export default function UseVersion() {
       <List>
         <List.EmptyView
           icon={{ source: Icon.XMarkCircle, tintColor: Color.Red }}
-          title="fnm 未找到"
+          title="fnm not found"
           description={
             fnmPath.includes("/")
-              ? `配置的路径 ${fnmPath} 不存在\n请检查扩展设置中的路径配置`
-              : "请先安装 fnm 或在扩展设置中配置 fnm 路径\n\n安装方法: brew install fnm"
+              ? `Configured path ${fnmPath} does not exist\nPlease check the path in extension settings`
+              : "Please install fnm or configure fnm path in extension settings\n\nInstall: brew install fnm"
           }
           actions={
             <ActionPanel>
-              <Action title="打开扩展设置" icon={Icon.Gear} onAction={openExtensionPreferences} />
+              <Action title="Open Extension Settings" icon={Icon.Gear} onAction={openExtensionPreferences} />
             </ActionPanel>
           }
         />
@@ -99,9 +99,9 @@ export default function UseVersion() {
             ]}
             actions={
               <ActionPanel>
-                <Action title="设为默认版本" icon={Icon.Star} onAction={() => handleUseVersion(version.version)} />
+                <Action title="Set as Default" icon={Icon.Star} onAction={() => handleUseVersion(version.version)} />
                 <Action
-                  title="刷新列表"
+                  title="Refresh List"
                   icon={Icon.ArrowClockwise}
                   onAction={loadVersions}
                   shortcut={{ modifiers: ["cmd"], key: "r" }}

@@ -14,16 +14,16 @@
       "name": "fnmPath",
       "type": "textfield",
       "required": false,
-      "title": "FNM 路径",
-      "description": "自定义 fnm 可执行文件的路径(如果自动检测失败)",
-      "placeholder": "/opt/homebrew/bin/fnm 或 /usr/local/bin/fnm"
+      "title": "FNM Path",
+      "description": "Custom path to fnm executable (if auto-detection fails)",
+      "placeholder": "/opt/homebrew/bin/fnm or /usr/local/bin/fnm"
     },
     {
       "name": "customPaths",
       "type": "textfield",
       "required": false,
-      "title": "额外的 PATH 路径",
-      "description": "额外的搜索路径,用冒号分隔",
+      "title": "Additional PATH",
+      "description": "Additional search paths, separated by colons",
       "placeholder": "/custom/path/bin:/another/path/bin"
     }
   ],

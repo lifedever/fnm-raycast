@@ -9,7 +9,7 @@ interface Preferences {
   customPaths?: string;
 }
 
-// 获取用户配置
+// Get user preferences
 function getPreferences(): Preferences {
   try {
     return getPreferenceValues<Preferences>();
@@ -18,20 +18,20 @@ function getPreferences(): Preferences {
   }
 }
 
-// 获取 fnm 命令,优先使用用户配置的路径
+// Get fnm command, prioritize user configured path
 function getFnmCommand(): string {
   const preferences = getPreferences();
 
-  // 如果用户配置了自定义路径,使用自定义路径
+  // If user configured a custom path, use it
   if (preferences.fnmPath && preferences.fnmPath.trim()) {
     return preferences.fnmPath.trim();
   }
 
-  // 否则使用默认的 fnm 命令
+  // Otherwise use default fnm command
   return "fnm";
 }
 
-// 获取正确的 PATH,包含常见的包管理器路径和用户自定义路径
+// Get correct PATH, including common package manager paths and user custom paths
 function getEnvWithPath() {
   const preferences = getPreferences();
 
@@ -44,13 +44,13 @@ function getEnvWithPath() {
     "/sbin",
   ];
 
-  // 添加用户自定义的额外路径
+  // Add user custom paths
   if (preferences.customPaths && preferences.customPaths.trim()) {
     const customPaths = preferences.customPaths.split(":").filter(Boolean);
     paths.unshift(...customPaths);
   }
 
-  // 添加系统 PATH
+  // Add system PATH
   if (process.env.PATH) {
     paths.push(process.env.PATH);
   }
@@ -61,7 +61,7 @@ function getEnvWithPath() {
   };
 }
 
-// 执行命令时使用正确的环境变量
+// Execute command with correct environment variables
 async function execWithEnv(command: string) {
   return execAsync(command, { env: getEnvWithPath() });
 }
@@ -80,13 +80,13 @@ export async function checkFnmInstalled(): Promise<boolean> {
   try {
     const fnmCmd = getFnmCommand();
 
-    // 如果用户配置了完整路径,直接检查文件是否存在
+    // If user configured a full path, check if file exists
     if (fnmCmd.includes("/")) {
       const { existsSync } = await import("fs");
       return existsSync(fnmCmd);
     }
 
-    // 否则使用 which 命令查找
+    // Otherwise use which command to find
     await execWithEnv(`which ${fnmCmd}`);
     return true;
   } catch {
@@ -111,7 +111,7 @@ export async function getInstalledVersions(): Promise<NodeVersion[]> {
     const lines = stdout.trim().split("\n");
     const versions: NodeVersion[] = [];
 
-    // 获取当前使用的版本
+    // Get current version in use
     let currentVersion: string | null = null;
     try {
       const { stdout: currentStdout } = await execWithEnv(`${fnmCmd} current`);
@@ -120,7 +120,7 @@ export async function getInstalledVersions(): Promise<NodeVersion[]> {
         currentVersion = currentMatch[1];
       }
     } catch {
-      // 如果获取当前版本失败,忽略错误
+      // Ignore error if getting current version fails
     }
 
     for (const line of lines) {
@@ -142,7 +142,7 @@ export async function getInstalledVersions(): Promise<NodeVersion[]> {
       }
     }
 
-    // 按版本号倒序排列(最新版本在前)
+    // Sort by version number descending (latest first)
     versions.sort((a, b) => {
       const [aMajor, aMinor, aPatch] = a.version.split(".").map(Number);
       const [bMajor, bMinor, bPatch] = b.version.split(".").map(Number);
@@ -200,17 +200,17 @@ export async function installVersion(version: string): Promise<{ success: boolea
 export async function useVersion(version: string): Promise<{ success: boolean; message: string }> {
   try {
     const fnmCmd = getFnmCommand();
-    // 使用 fnm default 而不是 fnm use,因为 use 需要 shell 集成
+    // Use fnm default instead of fnm use, because use requires shell integration
     await execWithEnv(`${fnmCmd} default ${version}`);
     return {
       success: true,
-      message: `已将 Node.js ${version} 设置为默认版本\n新打开的终端将使用此版本`,
+      message: `Node.js ${version} set as default\nNew terminal sessions will use this version`,
     };
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     return {
       success: false,
-      message: errorMessage || `切换到 Node.js ${version} 失败`,
+      message: errorMessage || `Failed to switch to Node.js ${version}`,
     };
   }
 }
@@ -272,7 +272,7 @@ export async function getRemoteVersions(): Promise<RemoteVersion[]> {
     const versions: RemoteVersion[] = [];
 
     for (const line of lines) {
-      // fnm 输出格式: "v22.11.0 (Jod)" 其中括号内是 LTS 代号
+      // fnm output format: "v22.11.0 (Jod)" where parentheses contain LTS codename
       const ltsMatch = line.match(/\(([^)]+)\)/);
       const isLts = ltsMatch !== null;
       const ltsName = ltsMatch ? ltsMatch[1] : undefined;
@@ -287,7 +287,7 @@ export async function getRemoteVersions(): Promise<RemoteVersion[]> {
       }
     }
 
-    // 按版本号倒序排列(最新版本在前)
+    // Sort by version number descending (latest first)
     versions.sort((a, b) => {
       const [aMajor, aMinor, aPatch] = a.version.split(".").map(Number);
       const [bMajor, bMinor, bPatch] = b.version.split(".").map(Number);

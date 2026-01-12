@@ -66,8 +66,8 @@ export default function InstallVersion(props: { arguments?: { version?: string }
       const fnmPath = getFnmPath();
       await showToast({
         style: Toast.Style.Failure,
-        title: "fnm 未找到",
-        message: fnmPath.includes("/") ? `路径 ${fnmPath} 不存在,请检查配置` : "请安装 fnm 或在设置中配置路径",
+        title: "fnm not found",
+        message: fnmPath.includes("/") ? `Path ${fnmPath} does not exist, please check configuration` : "Please install fnm or configure path in settings",
       });
       setIsLoading(false);
       return;
@@ -108,15 +108,15 @@ export default function InstallVersion(props: { arguments?: { version?: string }
       <List>
         <List.EmptyView
           icon={{ source: Icon.XMarkCircle, tintColor: Color.Red }}
-          title="fnm 未找到"
+          title="fnm not found"
           description={
             fnmPath.includes("/")
-              ? `配置的路径 ${fnmPath} 不存在\n请检查扩展设置中的路径配置`
-              : "请先安装 fnm 或在扩展设置中配置 fnm 路径\n\n安装方法: brew install fnm"
+              ? `Configured path ${fnmPath} does not exist\nPlease check the path in extension settings`
+              : "Please install fnm or configure fnm path in extension settings\n\nInstall: brew install fnm"
           }
           actions={
             <ActionPanel>
-              <Action title="打开扩展设置" icon={Icon.Gear} onAction={openExtensionPreferences} />
+              <Action title="Open Extension Settings" icon={Icon.Gear} onAction={openExtensionPreferences} />
             </ActionPanel>
           }
         />
