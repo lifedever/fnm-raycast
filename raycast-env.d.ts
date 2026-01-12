@@ -8,9 +8,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 type ExtensionPreferences = {
-  /** FNM 路径 - 自定义 fnm 可执行文件的路径(如果自动检测失败) */
+  /** FNM Path - Custom path to fnm executable (if auto-detection fails) */
   "fnmPath"?: string,
-  /** 额外的 PATH 路径 - 额外的搜索路径,用冒号分隔 */
+  /** Additional PATH - Additional search paths, separated by colons */
   "customPaths"?: string
 }
 
