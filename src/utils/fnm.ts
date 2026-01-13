@@ -1,14 +1,11 @@
+/// <reference path="../../raycast-env.d.ts" />
 import { exec } from "child_process";
 import { promisify } from "util";
 import { getPreferenceValues } from "@raycast/api";
 
 const execAsync = promisify(exec);
 
-interface Preferences {
-  fnmPath?: string;
-  customPaths?: string;
-}
-
+// Use auto-generated Preferences type from raycast-env.d.ts
 // Get user preferences
 function getPreferences(): Preferences {
   try {
@@ -16,6 +13,21 @@ function getPreferences(): Preferences {
   } catch {
     return {};
   }
+}
+
+/**
+ * Validate version string to prevent command injection
+ * Allows: numbers, dots, dashes, and common aliases (lts, latest, etc.)
+ */
+function isValidVersion(version: string): boolean {
+  // Allow common aliases
+  const validAliases = ["lts", "latest", "lts-latest", "lts/*", "current"];
+  if (validAliases.includes(version.toLowerCase())) {
+    return true;
+  }
+  // Allow version patterns: numbers, dots, dashes, letters (for codenames like "lts/iron")
+  const versionPattern = /^[a-zA-Z0-9.\-\/\*]+$/;
+  return versionPattern.test(version) && version.length <= 50;
 }
 
 // Get fnm command, prioritize user configured path
@@ -177,6 +189,14 @@ export async function getCurrentVersion(): Promise<string | null> {
  * Install a Node.js version
  */
 export async function installVersion(version: string): Promise<{ success: boolean; message: string }> {
+  // Validate version to prevent command injection
+  if (!isValidVersion(version)) {
+    return {
+      success: false,
+      message: "Invalid version format",
+    };
+  }
+
   try {
     const fnmCmd = getFnmCommand();
     const { stdout, stderr } = await execWithEnv(`${fnmCmd} install ${version}`);
@@ -198,6 +218,14 @@ export async function installVersion(version: string): Promise<{ success: boolea
  * Note: fnm use requires shell integration, so we set it as default instead
  */
 export async function useVersion(version: string): Promise<{ success: boolean; message: string }> {
+  // Validate version to prevent command injection
+  if (!isValidVersion(version)) {
+    return {
+      success: false,
+      message: "Invalid version format",
+    };
+  }
+
   try {
     const fnmCmd = getFnmCommand();
     // Use fnm default instead of fnm use, because use requires shell integration
@@ -219,6 +247,14 @@ export async function useVersion(version: string): Promise<{ success: boolean; m
  * Set default Node.js version
  */
 export async function setDefaultVersion(version: string): Promise<{ success: boolean; message: string }> {
+  // Validate version to prevent command injection
+  if (!isValidVersion(version)) {
+    return {
+      success: false,
+      message: "Invalid version format",
+    };
+  }
+
   try {
     const fnmCmd = getFnmCommand();
     const { stdout, stderr } = await execWithEnv(`${fnmCmd} default ${version}`);
@@ -239,6 +275,14 @@ export async function setDefaultVersion(version: string): Promise<{ success: boo
  * Uninstall a Node.js version
  */
 export async function uninstallVersion(version: string): Promise<{ success: boolean; message: string }> {
+  // Validate version to prevent command injection
+  if (!isValidVersion(version)) {
+    return {
+      success: false,
+      message: "Invalid version format",
+    };
+  }
+
   try {
     const fnmCmd = getFnmCommand();
     const { stdout, stderr } = await execWithEnv(`${fnmCmd} uninstall ${version}`);
